@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"time"
 
-	"PlayerLog/internal/server"
+	"github.com/PlayerLog/playerlog/internal/server"
 )
 
 func gracefulShutdown(apiServer *http.Server, done chan bool) {

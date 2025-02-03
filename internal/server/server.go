@@ -9,21 +9,24 @@ import (
 
 	_ "github.com/joho/godotenv/autoload"
 
-	"PlayerLog/internal/database"
+	"github.com/PlayerLog/playerlog/internal/auth"
+	"github.com/PlayerLog/playerlog/internal/database"
 )
 
 type Server struct {
 	port int
 
-	db database.Service
+	db          database.Service
+	authHandler *auth.Handler
 }
 
 func NewServer() *http.Server {
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
+	db := database.New()
 	NewServer := &Server{
-		port: port,
-
-		db: database.New(),
+		port:        port,
+		authHandler: auth.NewHandler(db, []byte("secret-key")),
+		db:          db,
 	}
 
 	// Declare Server config

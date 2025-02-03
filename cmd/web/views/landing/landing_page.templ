@@ -1,0 +1,49 @@
+package landing
+
+import "github.com/PlayerLog/playerlog/cmd/web"
+import templui "github.com/axzilla/templui/pkg/components"
+
+templ LandingPage() {
+	@web.Base("Home") {
+		<section class="h-full">
+			<div class="mx-auto max-w-screen-xl px-4 lg:flex h-[calc(100vh-200px)] lg:items-center">
+				<div class="mx-auto max-w-xl text-center">
+					<h1 class="text-3xl font-extrabold sm:text-5xl">
+						Follow Their Path.
+						// <strong class="font-extrabold text-red-700 sm:block">Perfect Your Game. </strong>
+						<strong class="font-extrabold text-primary sm:block"><span class="underline underline-offset-4">Perfect</span> Your Game. </strong>
+					</h1>
+					<p class="mt-4 text-muted-foreground sm:text-xl/relaxed">
+						Turn player behavior into meaningful metrics that guide your game development and business decisions.
+					</p>
+					<div class="mt-8 flex flex-wrap justify-center gap-4">
+						// <a
+						// 	class="block w-full rounded bg-red-600 px-12 py-3 text-sm font-medium text-white shadow hover:bg-red-700 focus:outline-none focus:ring active:bg-red-500 sm:w-auto"
+						// 	href="#"
+						// >
+						// 	Get Started
+						// </a>
+                        @templui.Button(templui.ButtonProps{
+                            Text: "Get Started",
+                            Size: templui.ButtonSizeLg,
+                            Class: "cursor-pointer",
+														Href: "/register",
+                        })
+						// <a
+						// 	class="block w-full rounded px-12 py-3 text-sm font-medium text-red-600 shadow hover:text-red-700 focus:outline-none focus:ring active:text-red-500 sm:w-auto"
+						// 	href="#"
+						// >
+						// 	Learn More
+						// </a>
+                        @templui.Button(templui.ButtonProps{
+                            Text: "Learn More",
+                            Size: templui.ButtonSizeLg,
+                            Variant: templui.ButtonVariantOutline,
+                            Class: "cursor-pointer",
+                        })
+					</div>
+				</div>
+			</div>
+		</section>
+	}
+}

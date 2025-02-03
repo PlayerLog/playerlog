@@ -1,0 +1,38 @@
+package components
+
+import (
+	templui "github.com/axzilla/templui/pkg/components"
+	"github.com/axzilla/templui/pkg/icons"
+)
+
+templ Navbar() {
+	<nav class="sticky z-[100] h-16 inset-x-0 top-0 w-full border-b bg-background/80 backdrop-blur-lg transition-all">
+		<div class="container mx-auto h-full w-full flex justify-between items-center">
+			<h3 class="scroll-m-20 text-2xl font-bold tracking-tight">
+				<a href="/">
+					PlayerLog
+				</a>
+			</h3>
+			// <div id="profile-img" hx-get="/auth/avatar" hx-trigger="load" hx-swap="outerHTML"></div>
+			if ctx.Value("authenticated") == true {
+				@templui.Button(templui.ButtonProps{
+					Text:    "Dashboard",
+					Href:    "/dashboard",
+					Variant: templui.ButtonVariantGhost,
+					IconRight: icons.SquareArrowOutUpRight(icons.IconProps{
+						Size: "16",
+					}),
+					Class: "cursor-pointer",
+				})
+			}
+		</div>
+	</nav>
+}
+
+templ Profile(src string) {
+	if src == "" {
+		<div class="w-10 h-10 rounded-full bg-muted animate-pulse"></div>
+	} else {
+		<img class="w-10 h-10 rounded-full" src={ src }/>
+	}
+}

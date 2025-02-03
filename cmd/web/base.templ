@@ -1,17 +1,28 @@
 package web
 
-templ Base() {
+import (
+	"github.com/PlayerLog/playerlog/cmd/web/components"
+	"github.com/axzilla/templui/pkg/helpers"
+)
+
+templ Base(title string) {
 	<!DOCTYPE html>
 	<html lang="en" class="h-screen">
 		<head>
 			<meta charset="utf-8"/>
 			<meta name="viewport" content="width=device-width,initial-scale=1"/>
-			<title>Go Blueprint Hello</title>
+			<title>{ title }</title>
+			<link rel="preconnect" href="https://fonts.googleapis.com"/>
+			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+			<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet"/>
 			<link href="assets/css/output.css" rel="stylesheet"/>
 			<script src="assets/js/htmx.min.js"></script>
+			@helpers.AlpineJS()
+			@helpers.ComponentScripts()
 		</head>
-		<body class="bg-gray-100">
-			<main class="max-w-sm mx-auto p-4">
+		<body>
+			@components.Navbar()
+			<main class="container mx-auto pt-10">
 				{ children... }
 			</main>
 		</body>

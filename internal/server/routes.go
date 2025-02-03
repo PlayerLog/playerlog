@@ -8,8 +8,11 @@ import (
 	"fmt"
 	"time"
 
-	"PlayerLog/cmd/web"
-	"github.com/a-h/templ"
+	"github.com/PlayerLog/playerlog/cmd/web"
+	"github.com/PlayerLog/playerlog/cmd/web/views/dashboard"
+	"github.com/PlayerLog/playerlog/cmd/web/views/landing"
+	"github.com/PlayerLog/playerlog/pkg/render"
+
 	"github.com/coder/websocket"
 )
 
@@ -17,7 +20,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	mux := http.NewServeMux()
 
 	// Register routes
-	mux.HandleFunc("/", s.HelloWorldHandler)
+	mux.Handle("/", s.authHandler.OpenAuthMiddleware(render.WrapHandler(landing.LandingPage())))
 
 	mux.HandleFunc("/health", s.healthHandler)
 
@@ -25,8 +28,17 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	fileServer := http.FileServer(http.FS(web.Files))
 	mux.Handle("/assets/", fileServer)
-	mux.Handle("/web", templ.Handler(web.HelloForm()))
-	mux.HandleFunc("/hello", web.HelloWebHandler)
+	mux.Handle("/dashboard", s.authHandler.AuthMiddleware(render.WrapHandler(dashboard.DashboardPage())))
+
+	// mux.Handle("GET /login", s.authHandler.LoginPage())
+	// mux.Handle("GET /register", s.authHandler.RegisterPage())
+
+	mux.Handle("GET /login", s.authHandler.OpenAuthMiddleware(s.authHandler.LoginPage()))
+	mux.Handle("GET /register", s.authHandler.OpenAuthMiddleware(s.authHandler.RegisterPage()))
+
+	authRouter := s.authHandler.GetRoutes()
+
+	mux.Handle("/auth/", http.StripPrefix("/auth", authRouter))
 
 	// Wrap the mux with CORS middleware
 	return s.corsMiddleware(mux)
@@ -35,7 +47,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 func (s *Server) corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Set CORS headers
-		w.Header().Set("Access-Control-Allow-Origin", "*") // Replace "*" with specific origins if needed
+		w.Header().Set("Access-Control-Allow-Origin", "/") // Replace "*" with specific origins if needed
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH")
 		w.Header().Set("Access-Control-Allow-Headers", "Accept, Authorization, Content-Type, X-CSRF-Token")
 		w.Header().Set("Access-Control-Allow-Credentials", "false") // Set to "true" if credentials are required

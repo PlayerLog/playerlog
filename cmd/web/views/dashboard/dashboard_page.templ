@@ -1,0 +1,14 @@
+package dashboard
+
+import "github.com/PlayerLog/playerlog/cmd/web"
+
+templ DashboardPage() {
+	@web.Base("Dashboard") {
+		<h3 class="text-3xl font-semibold">Dashboard</h3>
+		<div
+			hx-get="/auth/user"
+			hx-trigger="load"
+			hx-swap="innerHTML"
+		></div>
+	}
+}

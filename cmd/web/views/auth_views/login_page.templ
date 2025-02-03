@@ -1,0 +1,106 @@
+package auth_views
+
+import (
+	"github.com/PlayerLog/playerlog/cmd/web"
+	"github.com/PlayerLog/playerlog/internal/types"
+	"github.com/axzilla/templui/pkg/components"
+	"github.com/axzilla/templui/pkg/icons"
+)
+
+templ LoginPage() {
+	@web.Base("Login to account") {
+		<div class="grid grid-cols-1 md:grid-cols-2 h-full">
+			<section class="px-6 pt-6 flex flex-col gap-4 h-full">
+				<h3 class="scroll-m-20 text-4xl font-bold tracking-tight">Welcome To PlayerLog!</h3>
+				<div class="h-full">
+					@LoginForm(types.LoginUserValues{}, map[string]string{})
+				</div>
+			</section>
+			<section>
+				<img class="h-[500px] w-full object-cover rounded-xl" src="https://7iv6t5e5f6.ufs.sh/f/RvmWeDt6sudtpHHkVj5T703Crneid9LHxcXVNZsa6hMFSUkw"/>
+			</section>
+		</div>
+	}
+}
+
+templ LoginForm(values types.LoginUserValues, errors map[string]string) {
+	<form class="flex flex-col justify-between h-full" method="post" hx-post="/auth/login" hx-target="this" hx-swap="outerHTML" hx-disabled-elt="find #login_button" hx-indicator="#loader_spinner">
+		<div class="space-y-2">
+			@components.FormItem(components.FormItemProps{}) {
+				@components.FormLabel(components.FormLabelProps{
+					Text: "Email",
+					For:  "email_form",
+				})
+				@components.Input(components.InputProps{
+					ID:          "email_form",
+					Type:        "email",
+					Name:        "email",
+					Placeholder: "m@exempel.com",
+					Value:       values.Email,
+					HasError:    len(errors["email"]) > 0,
+					Attributes: templ.Attributes(map[string]any{
+						"required": true,
+					}),
+				})
+				@components.FormMessage(components.FormMessageProps{
+					Message: errors["email"],
+					Type:    "error",
+					Class:   "uppercase-first",
+				})
+			}
+			<div>
+				@components.FormItem(components.FormItemProps{}) {
+					@components.FormLabel(components.FormLabelProps{
+						Text: "Password",
+						For:  "password_form",
+					})
+					@components.Input(components.InputProps{
+						ID:          "password_form",
+						Type:        "password",
+						Name:        "password",
+						Placeholder: "Ex. 12345678",
+						Value:       values.Password,
+						HasError:    len(errors["password"]) > 0,
+						Attributes: templ.Attributes(map[string]any{
+							"required": true,
+						}),
+					})
+					@components.FormMessage(components.FormMessageProps{
+						Message: errors["password"],
+						Type:    "error",
+						Class:   "uppercase-first",
+					})
+				}
+			</div>
+			<p class="text-sm font-medium text-destructive text-center my-2 lowercase first-letter:uppercase">
+				// { strings.ToTitle(errors["global"]) }
+				{ errors["global"] }
+			</p>
+		</div>
+		<div>
+			<p class="text-sm text-gray-500 dark:text-gray-400">
+				By creating an account, you agree to our
+				<a href="#" class="text-gray-700 underline dark:text-gray-200">
+					terms and conditions
+				</a>
+				and
+				<a href="#" class="text-gray-700 underline dark:text-gray-200">privacy policy </a>.
+			</p>
+			@components.Button(components.ButtonProps{
+				Class: "mt-4 w-full gap-2 disabled:cursor-not-allowed",
+				Attributes: templ.Attributes(map[string]any{
+					"type": "submit",
+					"id":   "login_button",
+				}),
+			}) {
+				<div id="loader_spinner" class="loader_spinner">
+					@icons.Loader(icons.IconProps{Size: "18", Class: "animate-spin"})
+				</div>
+				<p id="button_text" class="button_text block">
+					Create account
+				</p>
+			}
+			<p class="text-sm text-muted-foreground text-center py-1">Already have an account? <a href="/login" class="text-foreground underline">Login</a>.</p>
+		</div>
+	</form>
+}
