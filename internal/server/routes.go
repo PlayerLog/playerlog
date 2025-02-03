@@ -37,8 +37,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 	mux.Handle("GET /register", s.authHandler.OpenAuthMiddleware(s.authHandler.RegisterPage()))
 
 	authRouter := s.authHandler.GetRoutes()
-
 	mux.Handle("/auth/", http.StripPrefix("/auth", authRouter))
+
+	organizationRouter := s.organizationHandler.GetRoutes()
+	mux.Handle("/organizations/", http.StripPrefix("/organizations", organizationRouter))
 
 	// Wrap the mux with CORS middleware
 	return s.corsMiddleware(mux)

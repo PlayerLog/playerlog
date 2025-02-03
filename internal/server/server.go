@@ -11,22 +11,25 @@ import (
 
 	"github.com/PlayerLog/playerlog/internal/auth"
 	"github.com/PlayerLog/playerlog/internal/database"
+	"github.com/PlayerLog/playerlog/internal/organization"
 )
 
 type Server struct {
 	port int
 
-	db          database.Service
-	authHandler *auth.Handler
+	db                  database.Service
+	authHandler         *auth.Handler
+	organizationHandler *organization.Handler
 }
 
 func NewServer() *http.Server {
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
 	db := database.New()
 	NewServer := &Server{
-		port:        port,
-		authHandler: auth.NewHandler(db, []byte("secret-key")),
-		db:          db,
+		port:                port,
+		db:                  db,
+		authHandler:         auth.NewHandler(db, []byte("secret-key")),
+		organizationHandler: organization.NewHandler(),
 	}
 
 	// Declare Server config
